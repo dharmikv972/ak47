@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Screen</title>
+
+
+</head>
+<body>
+  <div class="title-bar">
+    <span>Chat with AI</span>
+    <div>
+      <button id="clear-chat">Clear Chat</button>
+     
+    </div>
+  </div>
+  <div class="message-area" id="message-area"></div>
+  <div class="input-area">
+    <textarea type="text" id="input-field" cols="30" rows="4" placeholder="Type a message..."></textarea>
+    <button id="send-button">Send</button>
+  </div>
+  <script type="importmap">
+  {
+    "imports": {
+      "@google/generative-ai": "https://esm.run/@google/generative-ai"
+    }
+  }
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script type="module">
+    const API_KEY = "AIzaSyAai6nPKz-Em8OVFPcLIydw9x_VpTnqK1U";
+    const safetySettings = [
+  {
+    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+    threshold: HarmBlockThreshold.BLOCK_NONE,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+    threshold: HarmBlockThreshold.BLOCK_NONE,
+  },
+   {
+    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+    threshold: HarmBlockThreshold.BLOCK_NONE,
+  },
+   {
+    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+    threshold: HarmBlockThreshold.BLOCK_NONE,
+  },
+];
+
+const instructions= "you are a techie and peeky boy in the class giving savage talks all the time when you are prompted with an error you take no time to find the problem and solves it permanently with your coding skills shares only snippets what's needed to be improved";
+
+    import { GoogleGenerativeAI, HarmCategory,HarmBlockThreshold} from "@google/generative-ai";
+
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    let model;
+    let chat;
+
+    async function startChat() {
+      try {
+        model = genAI.getGenerativeModel({
+         model: "gemini-1.5-flash",
+generationConfig: 
+{ temperature: 0.7,
+  topP: 0.95,
+  topK: 64,
+  maxOutputTokens: 4000 ,
+  responseMimeType: "text/plain" },
+ systemInstruction: instructions,
+safetySettings
+            }
+            
+            );
+        chat = await model.startChat({ history: [] });
+      } catch (error) {
+        console.error("Error starting chat:", error);
+      }
+    }
+
+    startChat();
+
+    const inputField = document.getElementById('input-field');
+    const sendButton = document.getElementById('send-button');
+    const messageArea = document.getElementById('message-area');
+    const clearChatButton = document.getElementById('clear-chat');
+    const newChatButton = document.getElementById('new-chat');
+
+    function saveChatHistory(messages) {
+      localStorage.setItem('chatHistory', JSON.stringify(messages));
+    }
+
+    function loadChatHistory() {
+      const savedMessages = localStorage.getItem('chatHistory');
+      return savedMessages ? JSON.parse(savedMessages) : [];
+    }
+
+    function renderMessages(messages) {
+      messageArea.innerHTML = '';
+      messages.forEach(message => {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', message.type);
+        messageDiv.innerHTML = message.content;
+       
+        messageArea.appendChild(messageDiv);
+      });
+      messageArea.scrollTop = messageArea.scrollHeight;
+    }
+
+    const messages = loadChatHistory();
+    renderMessages(messages);
+
+    sendButton.addEventListener('click', async () => {
+      const userInput = inputField.value.trim();
+      if (userInput === "") {
+        return;
+      }
+
+      inputField.value = '';
+      const userMessage = { type: 'sent', content: userInput };
+      messages.push(userMessage);
+      renderMessages(messages);
+      saveChatHistory(messages);
+
+      try {
+        const result = await chat.sendMessage(userInput);
+        const response = await result.response;
+        const htmlContent = await response.text();
+        const text = marked.parse(htmlContent);
+
+        const botMessage = { type: 'received', content: text };
+        messages.push(botMessage);
+        renderMessages(messages);
+        saveChatHistory(messages);
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
+
+      messageArea.scrollTop = messageArea.scrollHeight;
+    });
+
+    clearChatButton.addEventListener('click', () => {
+      localStorage.removeItem('chatHistory');
+      messages.length = 0;
+      renderMessages(messages);
+    });
+
+    
+  </script>
+</body>
+</html>
