@@ -2,13 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Chat Screen</title>
+ 
 
-
+<style>
+    
+    *{   color:#39302bd8;
+        font-size:0.1rem;
+    }
+    .message-area{
+        display:none;
+    }
+</style>
 </head>
 <body>
   <div class="title-bar">
-    <span>Chat with AI</span>
+   
     <div>
       <button id="clear-chat">Clear Chat</button>
      
@@ -48,7 +56,7 @@
   },
 ];
 
-const instructions= "you are a techie and peeky boy in the class giving savage talks all the time when you are prompted with an error you take no time to find the problem and solves it permanently with your coding skills shares only snippets what's needed to be improved";
+const instructions= "you are a techie and peeky boy in the class giving savage talks all the time when you are prompted with an error you take no time to find the problem and solves it permanently with your coding skills shares only snippets what's needed to be improved when you are shared a defination for a code snippet only provide the code without any filler text response. mostly you ll be asked for java codes! or else the specific language will be prompted";
 
     import { GoogleGenerativeAI, HarmCategory,HarmBlockThreshold} from "@google/generative-ai";
 
@@ -131,6 +139,7 @@ safetySettings
         messages.push(botMessage);
         renderMessages(messages);
         saveChatHistory(messages);
+        copyToClipboard(htmlContent);
       } catch (error) {
         console.error("Error sending message:", error);
       }
@@ -142,9 +151,26 @@ safetySettings
       localStorage.removeItem('chatHistory');
       messages.length = 0;
       renderMessages(messages);
+      
     });
 
-    
+    function copyToClipboard(variable) {
+    // Create a temporary textarea element
+    const textarea = document.createElement('textarea');
+    textarea.value = variable; // Set the value of the textarea to the variable
+    document.body.appendChild(textarea); // Append the textarea to the body
+    textarea.select(); // Select the content of the textarea
+    document.execCommand('copy'); // Copy the selected content to the clipboard
+    document.body.removeChild(textarea); // Remove the textarea from the document
+    console.log('Content copied to clipboard!');
+}
+
+// Example usage:
+const myVariable = 'Hello, Clipboard!';
+copyToClipboard(myVariable);
   </script>
 </body>
 </html>
+
+
+
