@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registration Form</title>
+  <style>
+  
+  
+table {
+  width: 50%;
+  margin: 0 auto;
+  border: 20px;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+  </style>
+</head>
+<body>
+<form action="Register" method="post">
+  <table>
+    <tr>
+      <td>Name:</td>
+      <td><input type="text" name="name" required></td>
+    </tr>
+    <tr>
+      <td>Password:</td>
+      <td><input type="password" name="password" required></td>
+    </tr>
+    <tr>
+      <td>Country:</td>
+      <td>
+        <select name="country" required>
+          <option value="">Select Country</option>
+          <option>india</option>
+                    <option>usa</option>
+                    <option>uk</option>
+          <option>brazil</option>
+                    <option>indonesia</option>
+          
+          
+         
+          
+          
+          
+               
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Email:</td>
+      <td><input type="email" name="email" required></td>
+    </tr>
+    <tr>
+      <td colspan="2"><button type="submit">Register</button></td> <td><a href="display">view records</a></td>
+     
+    </tr>
+      <tr>
+     
+          </tr>
+  </table>
+</form>
+</body>
+</html>
